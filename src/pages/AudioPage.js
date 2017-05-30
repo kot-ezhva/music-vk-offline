@@ -8,6 +8,7 @@ import {
     Image,
     RefreshControl
 } from "react-native";
+import Icon from "react-native-vector-icons/Ionicons";
 
 export default class AudioPage extends React.Component {
 
@@ -24,6 +25,7 @@ export default class AudioPage extends React.Component {
         this.setState({refreshing: true});
         AsyncStorage.getItem("musicItems").then((items) => {
             if (items) {
+                console.log("TRACK", items);
                 items = JSON.parse(items).reverse();
                 this.setState({
                     dataSource: this.state.dataSource.cloneWithRows(items)
@@ -53,17 +55,43 @@ export default class AudioPage extends React.Component {
                             onRefresh={this.reloadList.bind(this)}
                         />
                     }
-                    style={{alignSelf: "stretch"}}
+                    style={{alignSelf: "stretch", height: "100%"}}
                     dataSource={this.state.dataSource}
                     renderRow={(rowData) =>
                         <TouchableOpacity
                             onPress={() => this.onTrackPress(rowData)}
                             style={st.listItem}
+                            activeOpacity={0.9}
                         >
-                            <Image
-                                source={require("../assets/icons/play.png")}
-                                style={st.playImage}
-                            />
+                            {
+                                rowData.picture
+                                &&
+                                <Image
+                                    source={{
+                                        uri: rowData.picture
+                                    }}
+                                    style={st.playImage}
+                                />
+                            }
+
+                            {
+                                !rowData.picture
+                                &&
+                                <View
+                                    style={[st.playImage, {
+                                        backgroundColor: "#eee",
+                                        justifyContent: "center",
+                                        alignItems: "center",
+                                    }]}
+                                >
+                                    <Icon
+                                        name="ios-musical-notes-outline"
+                                        color="#727272"
+                                        size={30}
+                                    />
+                                </View>
+                            }
+
 
                             <View style={st.descContainer}>
                                 <Text style={st.artist}>{rowData.author}</Text>
@@ -89,20 +117,21 @@ const st = {
     },
     listItem: {
         flexDirection: "row",
-        padding: 5,
-        width: "100%",
+        padding: 10,
     },
     playImage: {
-        height: 50,
-        width: 50
+        height: 80,
+        width: 80,
+        borderRadius: 5
     },
     descContainer: {
-        paddingLeft: 5,
+        paddingHorizontal: 10,
         justifyContent: "center",
 
     },
     artist: {
-        fontWeight: "bold"
+        fontSize: 20,
+        fontWeight: "300"
     },
     songName: {},
     durationContainer: {

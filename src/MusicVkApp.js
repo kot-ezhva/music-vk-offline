@@ -31,7 +31,7 @@ const MainApp = TabNavigator({
             }
         },
     },
-    SettingsPage: {
+    /*SettingsPage: {
         screen: SettingsPage,
         navigationOptions: {
             tabBarIcon: ({focused}) => {
@@ -42,7 +42,7 @@ const MainApp = TabNavigator({
                 }
             },
         }
-    }
+    }*/
 }, {
     tabBarComponent: ({jumpToIndex, ...props, navigation}) => (
         <TabBarBottom
@@ -71,9 +71,9 @@ const MusicVkApp = StackNavigator({
     },
     Player: {
         screen: PlayerPage,
-        navigationOptions: {
+        /*navigationOptions: {
             header: null
-        }
+        }*/
     }
 });
 
