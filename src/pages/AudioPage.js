@@ -24,9 +24,12 @@ export default class AudioPage extends React.Component {
     reloadList(): void {
         this.setState({refreshing: true});
         AsyncStorage.getItem("musicItems").then((items) => {
+
             if (items) {
-                console.log("TRACK", items);
                 items = JSON.parse(items).reverse();
+                for(let i = 0; i < items.length; i++){
+                    console.log("ITEM", items[i]);
+                }
                 this.setState({
                     dataSource: this.state.dataSource.cloneWithRows(items)
                 });
@@ -64,17 +67,6 @@ export default class AudioPage extends React.Component {
                             activeOpacity={0.9}
                         >
                             {
-                                rowData.picture
-                                &&
-                                <Image
-                                    source={{
-                                        uri: rowData.picture
-                                    }}
-                                    style={st.playImage}
-                                />
-                            }
-
-                            {
                                 !rowData.picture
                                 &&
                                 <View
@@ -91,15 +83,20 @@ export default class AudioPage extends React.Component {
                                     />
                                 </View>
                             }
-
+                            {
+                                !!rowData.picture
+                                &&
+                                <Image
+                                    source={{
+                                        uri: rowData.picture
+                                    }}
+                                    style={st.playImage}
+                                />
+                            }
 
                             <View style={st.descContainer}>
                                 <Text style={st.artist}>{rowData.author}</Text>
                                 <Text style={st.songName}>{rowData.songName}</Text>
-                            </View>
-
-                            <View style={st.durationContainer}>
-                                <Text style={st.duration}>{rowData.duration}</Text>
                             </View>
 
                         </TouchableOpacity>
@@ -118,27 +115,24 @@ const st = {
     listItem: {
         flexDirection: "row",
         padding: 10,
+        paddingVertical: 5
     },
     playImage: {
         height: 80,
         width: 80,
-        borderRadius: 5
+        backgroundColor: "#eee",
+        borderRadius: 5,
     },
     descContainer: {
+        flex: 1,
+        alignSelf: "stretch",
         paddingHorizontal: 10,
         justifyContent: "center",
-
+        backgroundColor: "#fff",
     },
     artist: {
         fontSize: 20,
         fontWeight: "300"
     },
     songName: {},
-    durationContainer: {
-        marginLeft: "auto",
-        justifyContent: "center",
-        alignItems: "flex-end",
-        paddingRight: 5
-    },
-    duration: {},
 };

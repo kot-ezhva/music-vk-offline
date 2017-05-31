@@ -58,6 +58,7 @@ export default class DownloadPage extends React.Component {
             })
             .then((res) => {
                 this.saveAudio({
+                    primaryKey: 1,
                     author: songData.author,
                     songName: songData.songName,
                     path: res.path(),
@@ -144,11 +145,14 @@ if(window.location.href === "https://m.vk.com/audio") {
     async saveAudio(file): void {
         try {
             let musicItems = await AsyncStorage.getItem('musicItems');
+            let newPrimaryKey = 1;
             if (musicItems !== null) {
                 musicItems = JSON.parse(musicItems);
+                newPrimaryKey = musicItems[musicItems.length - 1].primaryKey + 1;
             } else {
                 musicItems = [];
             }
+            file.primaryKey = newPrimaryKey;
             musicItems.push(file);
 
             AsyncStorage.setItem("musicItems", JSON.stringify(musicItems));

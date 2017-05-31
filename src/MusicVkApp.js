@@ -71,9 +71,11 @@ const MusicVkApp = StackNavigator({
     },
     Player: {
         screen: PlayerPage,
-        /*navigationOptions: {
-            header: null
-        }*/
+        navigationOptions: {
+            header: null,
+            statusBarStyle: 'light-content',
+
+        }
     }
 });
 
