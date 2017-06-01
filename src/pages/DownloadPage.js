@@ -83,7 +83,7 @@ if(window.location.href === "https://m.vk.com/audio") {
 
     function addDownloadIcons() {
         var audioElements = document.getElementsByClassName("audio_item");
-
+    
         for (var i = 0; i < audioElements.length; i++) {
             var btn = audioElements[i].getElementsByClassName("ai_menu_toggle_button")[0];
             if(btn && !btn.classList.contains("downloadIcon")) {
@@ -93,11 +93,11 @@ if(window.location.href === "https://m.vk.com/audio") {
                 btn.onclick = function(event) {
                     event.stopPropagation();
                     event.preventDefault();
-
+    
                     var musicBody = findAncestor(event.target, "audio_item");
                     var picture = musicBody.getElementsByClassName("ai_play")[0];
                     musicBody = musicBody.getElementsByClassName("ai_body")[0];
-
+    
                     if(musicBody) {
                         var input = musicBody.getElementsByTagName("input")[0];
                         var author = musicBody.getElementsByClassName("ai_artist")[0].innerHTML;
@@ -108,14 +108,14 @@ if(window.location.href === "https://m.vk.com/audio") {
                         } else {
                             picture = "";
                         }
-
+    
                         var toSend = {
                             url: input.value,
                             author: author,
                             songName: songName,
                             picture: picture
                         };
-
+    
                         WebViewBridge.send(JSON.stringify(toSend));
                     }
                     return false;
@@ -123,21 +123,20 @@ if(window.location.href === "https://m.vk.com/audio") {
             }
         }
     }
-
+    
     function findAncestor (el, cls) {
         while ((el = el.parentElement) && !el.classList.contains(cls));
         return el;
     }
+}
 
-    if(WebViewBridge) {
-        WebViewBridge.onMessage = function (message) {
-            if(message === "replaceIcons") {
-                /*addDownloadIcons();*/
-            }
-        };
-        
+if(WebViewBridge) {
+    WebViewBridge.onMessage = function (message) {
+            
+    };
+    setTimeout(() => {
         WebViewBridge.send("loaded");
-    }
+    }, 3000);
 }
 `;
     }

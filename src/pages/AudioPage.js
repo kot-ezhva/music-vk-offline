@@ -6,9 +6,11 @@ import {
     TouchableOpacity,
     Text,
     Image,
-    RefreshControl
+    RefreshControl,
+    Dimensions
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
+const window = Dimensions.get("window");
 
 export default class AudioPage extends React.Component {
 
@@ -33,6 +35,10 @@ export default class AudioPage extends React.Component {
                 this.setState({
                     dataSource: this.state.dataSource.cloneWithRows(items)
                 });
+            } else {
+                this.setState({
+                    dataSource: this.state.dataSource.cloneWithRows(['empty'])
+                });
             }
             this.setState({refreshing: false});
         });
@@ -52,6 +58,7 @@ export default class AudioPage extends React.Component {
         return (
             <View style={st.container}>
                 <ListView
+                    enableEmptySections={true}
                     refreshControl={
                         <RefreshControl
                             refreshing={this.state.refreshing}
@@ -60,46 +67,70 @@ export default class AudioPage extends React.Component {
                     }
                     style={{alignSelf: "stretch", height: "100%"}}
                     dataSource={this.state.dataSource}
-                    renderRow={(rowData) =>
-                        <TouchableOpacity
-                            onPress={() => this.onTrackPress(rowData)}
-                            style={st.listItem}
-                            activeOpacity={0.9}
-                        >
-                            {
-                                !rowData.picture
-                                &&
-                                <View
-                                    style={[st.playImage, {
-                                        backgroundColor: "#eee",
-                                        justifyContent: "center",
-                                        alignItems: "center",
-                                    }]}
-                                >
-                                    <Icon
-                                        name="ios-musical-notes-outline"
-                                        color="#727272"
-                                        size={30}
-                                    />
+                    renderRow={(rowData) => {
+                        if(rowData === "empty") {
+                            return(
+                                <View style={{
+                                    flex: 1,
+                                    height: window.height - 50,
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    borderWidth: 1
+                                }}>
+                                    <Text style={{
+                                        fontSize: 27,
+                                        fontWeight: "100",
+                                        textAlign: "center",
+                                        padding: 10
+                                    }}>
+                                        Потяните вниз,{"\n"}чтобы обновить
+                                    </Text>
                                 </View>
-                            }
-                            {
-                                !!rowData.picture
-                                &&
-                                <Image
-                                    source={{
-                                        uri: rowData.picture
-                                    }}
-                                    style={st.playImage}
-                                />
-                            }
+                            );
+                        }
+                        return(
+                            <TouchableOpacity
+                                onPress={() => this.onTrackPress(rowData)}
+                                style={st.listItem}
+                                activeOpacity={0.9}
+                            >
+                                {
+                                    !rowData.picture
+                                    &&
+                                    <View
+                                        style={[st.playImage, {
+                                            backgroundColor: "#eee",
+                                            justifyContent: "center",
+                                            alignItems: "center",
+                                        }]}
+                                    >
+                                        <Icon
+                                            name="ios-musical-notes-outline"
+                                            color="#727272"
+                                            size={30}
+                                        />
+                                    </View>
+                                }
+                                {
+                                    !!rowData.picture
+                                    &&
+                                    <Image
+                                        source={{
+                                            uri: rowData.picture
+                                        }}
+                                        style={st.playImage}
+                                    />
+                                }
 
-                            <View style={st.descContainer}>
-                                <Text style={st.artist}>{rowData.author}</Text>
-                                <Text style={st.songName}>{rowData.songName}</Text>
-                            </View>
+                                <View style={st.descContainer}>
+                                    <Text style={st.artist}>{rowData.author}</Text>
+                                    <Text style={st.songName}>{rowData.songName}</Text>
+                                </View>
 
-                        </TouchableOpacity>
+                            </TouchableOpacity>
+                        );
+                    }
+
                     }
                 />
 

@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import Sound from "react-native-sound";
+import RNFetchBlob from 'react-native-fetch-blob';
 
 export default class PlayerPage extends React.Component {
     player;
@@ -18,6 +19,7 @@ export default class PlayerPage extends React.Component {
         super(props);
         this.state = {
             track: {},
+            randomize: false,
             sliderState: 0,
             isPlaying: false,
             currentTime: "0:00",
@@ -35,7 +37,7 @@ export default class PlayerPage extends React.Component {
     }
 
     createPlayerInstance() {
-        if(this.player) {
+        if (this.player) {
             clearInterval(this.sliderUpdating);
             this.player.pause();
             this.player.stop();
@@ -66,19 +68,19 @@ export default class PlayerPage extends React.Component {
     }
 
     nextTrack(back: boolean) {
-        if(this.player) {
+        if (this.player) {
             AsyncStorage.getItem("musicItems").then((items) => {
-                if(items) {
+                if (items) {
                     items = JSON.parse(items);
                     let nextTrackPk;
-                    if(back) {
+                    if (back) {
                         nextTrackPk = this.state.track.primaryKey + 1;
                     } else {
                         nextTrackPk = this.state.track.primaryKey - 1;
                     }
 
-                    for(let i = 0; i < items.length; i++) {
-                        if(items[i].primaryKey === nextTrackPk) {
+                    for (let i = 0; i < items.length; i++) {
+                        if (items[i].primaryKey === nextTrackPk) {
                             this.setState({
                                 track: items[i],
                                 sliderState: 0,
@@ -97,14 +99,14 @@ export default class PlayerPage extends React.Component {
     getFormattedFromSeconds(sec): String {
         let minutes = Math.floor(sec / 60);
         let seconds = Math.round(sec - minutes * 60);
-        if(seconds <= 9) {
+        if (seconds <= 9) {
             seconds = "0" + seconds.toString();
         }
         return minutes + ":" + seconds;
     }
 
     remoteTrack(state) {
-        if(this.player) {
+        if (this.player) {
             this.player.pause();
             let seconds = this.player.getDuration() * state;
             this.player.setCurrentTime(seconds);
@@ -117,7 +119,7 @@ export default class PlayerPage extends React.Component {
     }
 
     play() {
-        if(this.player) {
+        if (this.player) {
             this.setState({
                 isPlaying: true
             });
@@ -126,7 +128,7 @@ export default class PlayerPage extends React.Component {
     }
 
     pause() {
-        if(this.player) {
+        if (this.player) {
             this.setState({
                 isPlaying: false
             });
@@ -141,9 +143,66 @@ export default class PlayerPage extends React.Component {
         this.player = null;
     }
 
+    toggleRandomize() {
+        this.setState({
+            randomize: !this.state.randomize
+        });
+    }
+
+    deleteTrack(): void {
+        AsyncStorage.getItem("musicItems").then((items) => {
+            if (items) {
+                items = JSON.parse(items);
+
+                for (let i = 0; i < items.length; i++) {
+                    if (items[i].primaryKey === this.state.track.primaryKey) {
+                        RNFetchBlob.fs.unlink(this.state.track.path).then(() => {
+                            if (items.length === 1) {
+                                AsyncStorage.removeItem("musicItems").then(() => {
+                                    this.props.navigation.goBack();
+                                });
+                            } else {
+                                items.splice(i, 1);
+                                AsyncStorage.setItem("musicItems", JSON.stringify(items)).then(() => {
+                                    this.props.navigation.goBack();
+                                });
+                            }
+                        });
+                    }
+                }
+            }
+        });
+    }
+
     render() {
         return (
             <Image source={require("../assets/background.png")} style={st.container}>
+                <View
+                    style={{
+                        flex: 1,
+                        flexDirection: "row",
+                        alignItems: "flex-start",
+                        padding: 10,
+                    }}
+                >
+                    <TouchableOpacity
+                        onPress={() => this.props.navigation.goBack()}
+                        activeOpacity={0.8}
+                    >
+                        <Icon name="md-arrow-back" size={26} color="#fff"/>
+                    </TouchableOpacity>
+
+                    <Text style={{
+                        flex: 1
+                    }}/>
+
+                    <TouchableOpacity
+                        onPress={() => this.deleteTrack()}
+                        activeOpacity={0.8}
+                    >
+                        <Icon name="md-trash" size={26} color="#fff"/>
+                    </TouchableOpacity>
+                </View>
                 {
                     !!this.state.track.picture
                     &&
@@ -226,6 +285,24 @@ export default class PlayerPage extends React.Component {
                     </TouchableOpacity>
                 </View>
 
+                <View style={st.playingOptionsLine}>
+                    <TouchableOpacity
+                        activeOpacity={0.8}
+                        onPress={() => this.toggleRandomize()}
+                    >
+                        {
+                            this.state.randomize
+                            &&
+                            <Icon name="md-shuffle" size={25} color="#FFF"/>
+                        }
+                        {
+                            !this.state.randomize
+                            &&
+                            <Icon name="md-shuffle" size={25} color="#888"/>
+                        }
+                    </TouchableOpacity>
+                </View>
+
                 <View style={st.timeLine}>
                     <Text style={st.timeStart}>{this.state.currentTime}</Text>
                     <Text style={st.timeEnd}>{this.state.fullTime}</Text>
@@ -256,7 +333,7 @@ const st = {
     },
     controlLine: {
         flexDirection: "row",
-        marginBottom: 50
+        marginBottom: 20,
     },
     controlItem: {
         justifyContent: "center",
@@ -293,4 +370,10 @@ const st = {
         paddingHorizontal: 15,
         color: "#FFF",
     },
+    playingOptionsLine: {
+        flexDirection: "row",
+        justifyContent: "center",
+        alignItems: "center",
+        marginBottom: 50
+    }
 };
