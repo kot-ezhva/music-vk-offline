@@ -1,4 +1,4 @@
-package com.musicvkapp;
+package com.pulse11.music;
 
 import android.app.Application;
 

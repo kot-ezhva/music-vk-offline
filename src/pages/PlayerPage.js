@@ -72,28 +72,42 @@ export default class PlayerPage extends React.Component {
             AsyncStorage.getItem("musicItems").then((items) => {
                 if (items) {
                     items = JSON.parse(items);
-                    let nextTrackPk;
-                    if (back) {
-                        nextTrackPk = this.state.track.primaryKey + 1;
-                    } else {
-                        nextTrackPk = this.state.track.primaryKey - 1;
-                    }
 
                     for (let i = 0; i < items.length; i++) {
-                        if (items[i].primaryKey === nextTrackPk) {
-                            this.setState({
-                                track: items[i],
-                                sliderState: 0,
-                                currentTime: "0:00",
-                                fullTime: "0:00"
-                            }, () => {
-                                this.createPlayerInstance();
-                            });
+                        if (items[i].primaryKey === this.state.track.primaryKey) { // Текущий трек
+                            let nextTrack = (back) ? items[i + 1] : items[i - 1];
+
+                            if(this.state.randomize) { // TODO: Потенциальное зацикливание пишу
+                                nextTrack = this.getRandomTrack(items);
+                                if(nextTrack.path === this.state.track.path) {
+                                    nextTrack = this.getRandomTrack(items);
+                                }
+                            }
+
+                            if(nextTrack) {
+                                this.setState({
+                                    track: nextTrack,
+                                    sliderState: 0,
+                                    currentTime: "0:00",
+                                    fullTime: "0:00"
+                                }, () => {
+                                    this.createPlayerInstance();
+                                });
+                                break;
+                            }
                         }
                     }
                 }
             });
         }
+    }
+
+    getRandomTrack(items) {
+        let min = 0;
+        let max = items.length - 1;
+        let rand = min - 0.5 + Math.random() * (max - min + 1);
+        rand = Math.round(rand);
+        return items[rand];
     }
 
     getFormattedFromSeconds(sec): String {
@@ -156,18 +170,33 @@ export default class PlayerPage extends React.Component {
 
                 for (let i = 0; i < items.length; i++) {
                     if (items[i].primaryKey === this.state.track.primaryKey) {
-                        RNFetchBlob.fs.unlink(this.state.track.path).then(() => {
-                            if (items.length === 1) {
-                                AsyncStorage.removeItem("musicItems").then(() => {
-                                    this.props.navigation.goBack();
-                                });
-                            } else {
-                                items.splice(i, 1);
-                                AsyncStorage.setItem("musicItems", JSON.stringify(items)).then(() => {
-                                    this.props.navigation.goBack();
-                                });
+                        let needToDelete = true;
+                        for (let iter = 0; iter < items.length; iter++) {
+                            if(this.state.track.path === items[iter].path) {
+                                needToDelete = false;
                             }
-                        });
+                        }
+
+                        if(needToDelete) {
+                            RNFetchBlob.fs.unlink(this.state.track.path).then(() => {
+                                if (items.length === 1) {
+                                    AsyncStorage.removeItem("musicItems").then(() => {
+                                        this.props.navigation.goBack();
+                                    });
+                                } else {
+                                    items.splice(i, 1);
+                                    AsyncStorage.setItem("musicItems", JSON.stringify(items)).then(() => {
+                                        this.props.navigation.goBack();
+                                    });
+                                }
+                            });
+                        } else {
+                            items.splice(i, 1);
+                            AsyncStorage.setItem("musicItems", JSON.stringify(items)).then(() => {
+                                this.props.navigation.goBack();
+                            });
+                        }
+
                     }
                 }
             }

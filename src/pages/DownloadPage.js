@@ -57,11 +57,13 @@ export default class DownloadPage extends React.Component {
                 });
             })
             .then((res) => {
+                let filePath = res.path();
+
                 this.saveAudio({
                     primaryKey: 1,
                     author: songData.author,
                     songName: songData.songName,
-                    path: res.path(),
+                    path: filePath,
                     picture: songData.picture
                 });
             })

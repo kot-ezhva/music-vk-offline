@@ -1,4 +1,4 @@
-package com.musicvkapp;
+package com.pulse11.music;
 
 import com.facebook.react.ReactActivity;
 
@@ -10,6 +10,6 @@ public class MainActivity extends ReactActivity {
      */
     @Override
     protected String getMainComponentName() {
-        return "MusicVkApp";
+        return "Музыка оффлайн";
     }
 }
