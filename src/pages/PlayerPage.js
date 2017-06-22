@@ -242,10 +242,10 @@ export default class PlayerPage extends React.Component {
                     &&
                     <Image
                         style={{
-                            width: 160,
-                            height: 160,
+                            width: 130,
+                            height: 130,
                             marginBottom: 20,
-                            borderRadius: 320,
+                            borderRadius: 260,
                         }}
                         source={{
                             uri: this.state.track.picture
@@ -257,10 +257,10 @@ export default class PlayerPage extends React.Component {
                     !this.state.track.picture
                     &&
                     <View style={{
-                        width: 160,
-                        height: 160,
+                        width: 130,
+                        height: 130,
                         backgroundColor: "#727272",
-                        borderRadius: 320,
+                        borderRadius: 160,
                         marginBottom: 20,
                         alignItems: "center",
                         justifyContent: "center",
@@ -378,11 +378,11 @@ const st = {
         width: "100%"
     },
     trackInfo: {
-        marginBottom: 50
+        marginBottom: 30
     },
     author: {
         color: "#fff",
-        fontSize: 30,
+        fontSize: 25,
         fontWeight: "100",
         textAlign: "center",
         marginBottom: 10
@@ -390,6 +390,8 @@ const st = {
     songName: {
         color: "#fff",
         textAlign: "center",
+        fontSize: 15,
+        fontWeight: "300"
     },
     timeLine: {
         flexDirection: "row",
@@ -408,6 +410,6 @@ const st = {
         flexDirection: "row",
         justifyContent: "center",
         alignItems: "center",
-        marginBottom: 50
+        marginBottom: 30
     }
 };

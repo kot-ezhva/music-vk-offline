@@ -89,7 +89,7 @@ android {
     buildToolsVersion "23.0.3"
 
     defaultConfig {
-        applicationId "com.pulse11.music"
+        applicationId "ru.kotdev.clickclack"
         minSdkVersion 16
         targetSdkVersion 23
         versionCode 1

@@ -6,7 +6,24 @@ import AudioPage from "./pages/AudioPage";
 import SettingsPage from "./pages/SettingsPage";
 import PlayerPage from "./pages/PlayerPage";
 
-const MainApp = TabNavigator({
+
+const AudioPage2 = StackNavigator({
+    AudioPage: {
+        screen: AudioPage,
+        navigationOptions: {
+            header: null
+        }
+    },
+    Player: {
+        screen: PlayerPage,
+        navigationOptions: {
+            tabBarVisible: false,
+            header: null
+        }
+    }
+});
+
+const MusicVkApp = TabNavigator({
     DownloadPage: {
         screen: DownloadPage,
         navigationOptions: {
@@ -20,7 +37,7 @@ const MainApp = TabNavigator({
         }
     },
     AudioPage: {
-        screen: AudioPage,
+        screen: AudioPage2,
         navigationOptions: {
             tabBarIcon: ({focused}) => {
                 if (focused) {
@@ -62,7 +79,7 @@ const MainApp = TabNavigator({
     },
 });
 
-const MusicVkApp = StackNavigator({
+/*const MusicVkApp2 = StackNavigator({
     MainApp: {
         screen: MainApp,
         navigationOptions: {
@@ -77,7 +94,7 @@ const MusicVkApp = StackNavigator({
 
         }
     }
-});
+});*/
 
 
 export default MusicVkApp;

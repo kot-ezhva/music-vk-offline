@@ -27,7 +27,9 @@ export default class AudioPage extends React.Component {
         this.setState({refreshing: true});
         AsyncStorage.getItem("musicItems").then((items) => {
 
-            if (items) {
+            console.log(items);
+
+            if (items && items.length !== 2) {
                 items = JSON.parse(items).reverse();
                 this.setState({
                     dataSource: this.state.dataSource.cloneWithRows(items)
