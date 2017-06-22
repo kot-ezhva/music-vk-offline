@@ -3,7 +3,7 @@ package ru.kotdev.clickclack;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
-import com.cmcewen.blurview.BlurViewPackage;
+import com.github.alinz.reactnativewebviewbridge.WebViewBridgePackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.zmxv.RNSound.RNSoundPackage;
 import com.RNFetchBlob.RNFetchBlobPackage;
@@ -14,8 +14,6 @@ import com.facebook.soloader.SoLoader;
 
 import java.util.Arrays;
 import java.util.List;
-
-import com.github.alinz.reactnativewebviewbridge.WebViewBridgePackage;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -29,11 +27,10 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
-            new BlurViewPackage(),
+            new WebViewBridgePackage(),
             new VectorIconsPackage(),
             new RNSoundPackage(),
-            new RNFetchBlobPackage(),
-          new WebViewBridgePackage()
+            new RNFetchBlobPackage()
       );
     }
   };

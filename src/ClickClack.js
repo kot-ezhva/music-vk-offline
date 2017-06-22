@@ -23,7 +23,7 @@ const AudioPage2 = StackNavigator({
     }
 });
 
-const MusicVkApp = TabNavigator({
+const ClickClack = TabNavigator({
     DownloadPage: {
         screen: DownloadPage,
         navigationOptions: {
@@ -79,22 +79,4 @@ const MusicVkApp = TabNavigator({
     },
 });
 
-/*const MusicVkApp2 = StackNavigator({
-    MainApp: {
-        screen: MainApp,
-        navigationOptions: {
-            header: null
-        }
-    },
-    Player: {
-        screen: PlayerPage,
-        navigationOptions: {
-            header: null,
-            statusBarStyle: 'light-content',
-
-        }
-    }
-});*/
-
-
-export default MusicVkApp;
+export default ClickClack;

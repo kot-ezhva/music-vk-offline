@@ -1,4 +1,4 @@
 import { AppRegistry } from "react-native";
-import MusicVkApp from "./src/MusicVkApp";
+import ClickClack from "./src/ClickClack";
 
-AppRegistry.registerComponent('MusicVkApp', () => MusicVkApp);
+AppRegistry.registerComponent('ClickClack', () => ClickClack);
