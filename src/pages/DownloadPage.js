@@ -76,14 +76,18 @@ if(window.location.href === "https://m.vk.com/audio") {
     document.getElementsByClassName("layout__leftMenu")[0].remove();
     document.getElementsByClassName("basis__header")[0].remove();
     document.getElementsByClassName("basis__footer")[0].remove();
-    document.getElementsByClassName("audioPage__search")[0].remove();
-    document.getElementsByClassName("audioPage__header")[0].remove();
+    /*document.getElementsByClassName("audioPage__search")[0].remove();*/
+    document.getElementsByClassName("audioPage__tabs")[0].remove();    
 
     setInterval(function () {
         addDownloadIcons();
     }, 100);
 
     function addDownloadIcons() {
+        if(document.getElementsByClassName("show_more_wrap").length) {
+            document.getElementsByClassName("show_more_wrap")[0].remove();
+        }
+        
         var audioElements = document.getElementsByClassName("audio_item");
     
         for (var i = 0; i < audioElements.length; i++) {
@@ -106,15 +110,18 @@ if(window.location.href === "https://m.vk.com/audio") {
                         var songName = musicBody.getElementsByClassName("ai_title")[0].innerHTML;
                         
                         if(picture) {
-                            picture = picture.style.backgroundImage.slice(5, -2);
+                            picture = picture.style.backgroundImage.slice(4, -1);
+                            if(~picture.indexOf('"')) {
+                                picture = picture.slice(1, -1);
+                            }
                         } else {
                             picture = "";
                         }
     
                         var toSend = {
                             url: input.value,
-                            author: author,
-                            songName: songName,
+                            author: stripHtml(author),
+                            songName: stripHtml(songName),
                             picture: picture
                         };
     
@@ -126,6 +133,13 @@ if(window.location.href === "https://m.vk.com/audio") {
         }
     }
     
+    function stripHtml(html)
+    {
+       var tmp = document.createElement("DIV");
+       tmp.innerHTML = html;
+       return tmp.textContent || tmp.innerText || "";
+    }
+    
     function findAncestor (el, cls) {
         while ((el = el.parentElement) && !el.classList.contains(cls));
         return el;
@@ -134,9 +148,9 @@ if(window.location.href === "https://m.vk.com/audio") {
 
 if(WebViewBridge) {
     WebViewBridge.onMessage = function (message) {
-            
+       
     };
-    setTimeout(() => {
+    setTimeout(function() {
         WebViewBridge.send("loaded");
     }, 3000);
 }
@@ -147,7 +161,8 @@ if(WebViewBridge) {
         try {
             let musicItems = await AsyncStorage.getItem('musicItems');
             let newPrimaryKey = 1;
-            if (musicItems !== null) {
+            console.log("ITEMS", musicItems);
+            if (musicItems !== null && musicItems.length !== 2) {
                 musicItems = JSON.parse(musicItems);
                 newPrimaryKey = musicItems[musicItems.length - 1].primaryKey + 1;
             } else {

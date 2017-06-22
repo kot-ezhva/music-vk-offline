@@ -29,11 +29,13 @@ export default class PlayerPage extends React.Component {
 
     componentDidMount() {
         let {params} = this.props.navigation.state;
-        this.setState({
-            track: params.track
-        }, () => {
-            this.createPlayerInstance();
-        });
+        if(params && params.track) {
+            this.setState({
+                track: params.track
+            }, () => {
+                this.createPlayerInstance();
+            });
+        }
     }
 
     createPlayerInstance() {
@@ -212,10 +214,13 @@ export default class PlayerPage extends React.Component {
                         flexDirection: "row",
                         alignItems: "flex-start",
                         padding: 10,
+                        minHeight: 50
                     }}
                 >
                     <TouchableOpacity
-                        onPress={() => this.props.navigation.goBack()}
+                        onPress={() => {
+                            this.props.navigation.goBack();
+                        }}
                         activeOpacity={0.8}
                     >
                         <Icon name="md-arrow-back" size={26} color="#fff"/>

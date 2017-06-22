@@ -29,9 +29,6 @@ export default class AudioPage extends React.Component {
 
             if (items) {
                 items = JSON.parse(items).reverse();
-                for(let i = 0; i < items.length; i++){
-                    console.log("ITEM", items[i]);
-                }
                 this.setState({
                     dataSource: this.state.dataSource.cloneWithRows(items)
                 });
@@ -41,10 +38,11 @@ export default class AudioPage extends React.Component {
                 });
             }
             this.setState({refreshing: false});
+
         });
     }
 
-    componentDidMount() {
+    componentWillMount() {
         this.reloadList();
     }
 
@@ -56,7 +54,7 @@ export default class AudioPage extends React.Component {
 
     render() {
         return (
-            <View style={st.container}>
+            <View style={st.container} >
                 <ListView
                     enableEmptySections={true}
                     refreshControl={

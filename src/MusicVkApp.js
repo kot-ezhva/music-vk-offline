@@ -1,5 +1,5 @@
 import React from "react";
-import { StackNavigator, TabNavigator, TabBarBottom } from "react-navigation";
+import {StackNavigator, TabNavigator, TabBarBottom} from "react-navigation";
 import Icon from "react-native-vector-icons/Ionicons";
 import DownloadPage from "./pages/DownloadPage";
 import AudioPage from "./pages/AudioPage";
@@ -28,21 +28,21 @@ const MainApp = TabNavigator({
                 } else {
                     return (<Icon name="ios-musical-notes-outline" size={30} color="#9E9E9E"/>);
                 }
-            }
+            },
         },
     },
     /*SettingsPage: {
-        screen: SettingsPage,
-        navigationOptions: {
-            tabBarIcon: ({focused}) => {
-                if (focused) {
-                    return (<Icon name="ios-construct-outline" size={30} color="#4d7199"/>);
-                } else {
-                    return (<Icon name="ios-construct-outline" size={30} color="#9E9E9E"/>);
-                }
-            },
-        }
-    }*/
+     screen: SettingsPage,
+     navigationOptions: {
+     tabBarIcon: ({focused}) => {
+     if (focused) {
+     return (<Icon name="ios-construct-outline" size={30} color="#4d7199"/>);
+     } else {
+     return (<Icon name="ios-construct-outline" size={30} color="#9E9E9E"/>);
+     }
+     },
+     }
+     }*/
 }, {
     tabBarComponent: ({jumpToIndex, ...props, navigation}) => (
         <TabBarBottom
@@ -58,7 +58,7 @@ const MainApp = TabNavigator({
     swipeEnabled: false,
     lazy: false,
     tabBarOptions: {
-        showLabel: false
+        showLabel: false,
     },
 });
 
