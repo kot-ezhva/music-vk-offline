@@ -72,10 +72,9 @@ export default class AudioPage extends React.Component {
                             return(
                                 <View style={{
                                     flex: 1,
-                                    height: window.height - 50,
+                                    height: window.height - 150,
                                     alignItems: "center",
                                     justifyContent: "center",
-                                    borderWidth: 1
                                 }}>
                                     <Text style={{
                                         fontSize: 27,
