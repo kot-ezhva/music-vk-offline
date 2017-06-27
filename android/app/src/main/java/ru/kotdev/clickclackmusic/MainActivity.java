@@ -1,4 +1,4 @@
-package ru.kotdev.clickclack;
+package ru.kotdev.clickclackmusic;
 
 import com.facebook.react.ReactActivity;
 
