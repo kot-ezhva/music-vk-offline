@@ -148,9 +148,9 @@ const st = {
         paddingVertical: 5
     },
     playImage: {
-        height: 80,
-        width: 80,
-        backgroundColor: "#eee",
+        height: 60,
+        width: 60,
+        backgroundColor: "#fff",
         borderRadius: 5,
     },
     descContainer: {
@@ -161,8 +161,12 @@ const st = {
         backgroundColor: "#fff",
     },
     artist: {
-        fontSize: 20,
+        fontSize: 17,
+        fontWeight: "400",
+        color: "#000"
+    },
+    songName: {
+        fontSize: 14,
         fontWeight: "300"
     },
-    songName: {},
 };

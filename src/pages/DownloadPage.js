@@ -18,22 +18,20 @@ export default class DownloadPage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            loaded: false,
-            showProgress: false,
-            progressSize: 0,
-            fullSize: 0
+            webViewLoaded: false,
+            showLoadingBar: false,
+            downloadingTracks: 0
         };
     }
 
     onBridgeMessage(message) {
         if (message === "loaded") {
-            this.setState({
-                loaded: true
-            });
+            this.setState({webViewLoaded: true});
             return;
         }
+
         this.setState({
-            showProgress: true
+            showLoadingBar: true
         });
         let songData = JSON.parse(message);
         let url = songData.url;
@@ -43,6 +41,8 @@ export default class DownloadPage extends React.Component {
         let filename = "/" + url.substring(url.lastIndexOf('/') + 1);
         filename = filename.split("?")[0];
 
+        this.setState({downloadingTracks: this.state.downloadingTracks + 1});
+
         RNFetchBlob
             .config({
                 path: dirs.DocumentDir + filename,
@@ -51,10 +51,10 @@ export default class DownloadPage extends React.Component {
                 //some headers ..
             })
             .progress((received, total) => {
-                this.setState({
+                /*this.setState({
                     progressSize: (received / 1024 / 1024).toFixed(2) + "Mb",
                     fullSize: (total / 1024 / 1024).toFixed(2) + "Mb"
-                });
+                });*/
             })
             .then((res) => {
                 let filePath = res.path();
@@ -161,7 +161,7 @@ if(WebViewBridge) {
         try {
             let musicItems = await AsyncStorage.getItem('musicItems');
             let newPrimaryKey = 1;
-            console.log("ITEMS", musicItems);
+
             if (musicItems !== null && musicItems.length !== 2) {
                 musicItems = JSON.parse(musicItems);
                 newPrimaryKey = musicItems[musicItems.length - 1].primaryKey + 1;
@@ -172,10 +172,13 @@ if(WebViewBridge) {
             musicItems.push(file);
 
             AsyncStorage.setItem("musicItems", JSON.stringify(musicItems));
+
             this.setState({
-                showProgress: false,
-                fullSize: 0,
-                progressSize: 0
+                downloadingTracks: (this.state.downloadingTracks !== 0) ? this.state.downloadingTracks - 1 : 0,
+            }, () => {
+                this.setState({
+                    showLoadingBar: (this.state.downloadingTracks !== 0)
+                });
             });
 
         } catch (error) {
@@ -208,7 +211,7 @@ if(WebViewBridge) {
         return (
             <View style={st.container}>
                 {
-                    this.state.loaded === false
+                    this.state.webViewLoaded === false
                     &&
                     <View style={{
                         top: 0,
@@ -238,27 +241,33 @@ if(WebViewBridge) {
                     startInLoadingState={true}
                     userAgent={"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36"}
                     renderError={() => this.showError()}
-                    onError={() => this.setState({loaded: true})}
+                    onError={() => this.setState({webViewLoaded: true})}
                     style={{
                         width: window.width,
                         alignSelf: "stretch",
                         position: "absolute",
                         left: 0,
                         right: 0,
-                        top: (this.state.loaded && this.state.showProgress === false) ? 0 : window.height,
+                        top: this.state.webViewLoaded ? 0 : window.height,
                         bottom: 0,
                     }}
                 />
 
                 {
-                    this.state.showProgress
+                    this.state.showLoadingBar
                     &&
-                    <View style={st.progressContainer}>
+                    <View style={st.loadingBarContainer}>
+                        <ActivityIndicator
+                            animating={true}
+                            style={{
+                                height: 20,
+                                marginRight: 15
+                            }}
+                            size="large"
+                            color="#FFF"
+                        />
                         <Text style={st.progressTitle} >
-                            Загрузка...
-                        </Text>
-                        <Text style={st.progressText}>
-                            {this.state.progressSize} из {this.state.fullSize}
+                            Выполняется загрузка ({this.state.downloadingTracks})...
                         </Text>
                     </View>
                 }
@@ -296,27 +305,22 @@ const st = {
         color: "#555",
         marginBottom: 15
     },
-    progressContainer: {
+    loadingBarContainer: {
         flex: 1,
+        flexDirection: "row",
         alignSelf: "stretch",
         position: "absolute",
-        top: 0,
+        height: 50,
         bottom: 0,
         left: 0,
         right: 0,
-        backgroundColor: "#727272",
-        justifyContent: "center",
-        alignItems: "center"
+        backgroundColor: "#4d7199",
+        justifyContent: "flex-start",
+        alignItems: "center",
+        paddingHorizontal: 15
     },
     progressTitle: {
-        fontSize: 30,
         fontWeight: "100",
         color: "#FFF",
-        marginBottom: 20
     },
-    progressText: {
-        color: "#FFF",
-        fontWeight: "100",
-        fontSize: 25
-    }
 };
