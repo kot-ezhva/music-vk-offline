@@ -3,6 +3,7 @@ package ru.kotdev.clickclackmusic;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.tanguyantoine.react.MusicControl;
 import com.github.alinz.reactnativewebviewbridge.WebViewBridgePackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.zmxv.RNSound.RNSoundPackage;
@@ -27,6 +28,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new MusicControl(),
             new WebViewBridgePackage(),
             new VectorIconsPackage(),
             new RNSoundPackage(),

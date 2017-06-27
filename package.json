@@ -10,6 +10,7 @@
     "react": "16.0.0-alpha.6",
     "react-native": "0.44.2",
     "react-native-fetch-blob": "^0.10.5",
+    "react-native-music-control": "^0.4.4",
     "react-native-sound": "^0.10.1",
     "react-native-vector-icons": "^4.1.1",
     "react-native-webview-bridge": "vtex/react-native-webview-bridge",

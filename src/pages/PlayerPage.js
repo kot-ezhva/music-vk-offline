@@ -5,11 +5,14 @@ import {
     TouchableOpacity,
     Image,
     Slider,
-    AsyncStorage
+    AsyncStorage,
+    AppState,
+    DeviceEventEmitter,
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import Sound from "react-native-sound";
 import RNFetchBlob from 'react-native-fetch-blob';
+/*import MusicControl from 'react-native-music-control';*/
 
 export default class PlayerPage extends React.Component {
     player;
@@ -18,6 +21,7 @@ export default class PlayerPage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            appState: AppState.currentState,
             track: {},
             randomize: false,
             sliderState: 0,
@@ -28,8 +32,19 @@ export default class PlayerPage extends React.Component {
     }
 
     componentDidMount() {
+        DeviceEventEmitter.addListener('ActivityStateChange',
+            (e) => {
+            if(e.event === "onPause") {
+                this.pause();
+            }
+            if(e.event === "onResume") {
+                this.play();
+            }
+                console.log("event!", e);
+            });
+
         let {params} = this.props.navigation.state;
-        if(params && params.track) {
+        if (params && params.track) {
             this.setState({
                 track: params.track
             }, () => {
@@ -79,14 +94,14 @@ export default class PlayerPage extends React.Component {
                         if (items[i].primaryKey === this.state.track.primaryKey) { // Текущий трек
                             let nextTrack = (back) ? items[i + 1] : items[i - 1];
 
-                            if(this.state.randomize) { // TODO: Потенциальное зацикливание пишу
+                            if (this.state.randomize) { // TODO: Потенциальное зацикливание пишу
                                 nextTrack = this.getRandomTrack(items);
-                                if(nextTrack.path === this.state.track.path) {
+                                if (nextTrack.path === this.state.track.path) {
                                     nextTrack = this.getRandomTrack(items);
                                 }
                             }
 
-                            if(nextTrack) {
+                            if (nextTrack) {
                                 this.setState({
                                     track: nextTrack,
                                     sliderState: 0,
@@ -174,12 +189,12 @@ export default class PlayerPage extends React.Component {
                     if (items[i].primaryKey === this.state.track.primaryKey) {
                         let needToDelete = true;
                         for (let iter = 0; iter < items.length; iter++) {
-                            if(this.state.track.path === items[iter].path) {
+                            if (this.state.track.path === items[iter].path) {
                                 needToDelete = false;
                             }
                         }
 
-                        if(needToDelete) {
+                        if (needToDelete) {
                             RNFetchBlob.fs.unlink(this.state.track.path).then(() => {
                                 if (items.length === 1) {
                                     AsyncStorage.removeItem("musicItems").then(() => {
